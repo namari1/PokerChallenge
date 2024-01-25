@@ -1,24 +1,26 @@
+""" Random mod providing random functions to shuffle a list and select random items from a list,
+Counter mod to use for determining two pair hand"""
 import random
 from collections import Counter
 
 
 # Part 1: Poker Hands
-
-# First, I want a function that converts a player's cards in a sorted hand, with the face cards having inherent
-# numeric values
 def convert_card_to_numeric(card):
-    # Getting the rank of the card which will initially be a string by getting everything but the last element in the
-    # string which will be the suit
+    """ Function to convert card as string into card as a tuple with its rank as an int and its
+    suit as a string"""
+
+    # Getting the rank of the card by getting everything but the last element in the string which
+    # is the suit
     rank_str = card[:-1]
     suit = card[-1]
 
     # Making a dictionary with the face cards and their numeric values
     face_card_values = {'J': 11, 'Q': 12, 'K': 13, 'A': 14}
 
-    # If the rank is a face card, getting the associated numeric value of it and saving it to a new variable,
-    # rank_numeric
-    if rank_str in list(face_card_values.keys()):
-        rank_numeric = face_card_values.get(rank_str)
+    # If the rank is a face card, getting the associated numeric value of it and saving it to a
+    # new variable, rank_numeric
+    if rank_str in face_card_values:
+        rank_numeric = face_card_values[rank_str]
     # Otherwise, converting the string rank into a numeric value
     else:
         rank_numeric = int(rank_str)
@@ -27,16 +29,18 @@ def convert_card_to_numeric(card):
     return rank_numeric, suit
 
 
-# In order to accomplish this, creating distinct functions that will determine if a player's sorted cards belong to
-# one of the 10 different hands in poker
-
+# Create distinct functions that will determine if a player's sorted cards belong to one of the
+# 10 different hands in poker
 def is_full_house(sorted_hand):
+    """ Function that returns true if sorted hand is a full house"""
+
     # A full house is 3 of a kind with a pair, so just using those functions in conjunction here.
-    # If they are both true, it is a full house
     return is_three_kind(sorted_hand) and is_pair(sorted_hand)
 
 
 def is_three_kind(sorted_hand):
+    """ Function that returns true if sorted hand is three of a kind """
+
     # First, get the ranks of the cards in a list
     ranks = [card[0] for card in sorted_hand]
     three_kind = False
@@ -49,11 +53,13 @@ def is_three_kind(sorted_hand):
 
 
 def is_two_pair(sorted_hand):
+    """ Function that returns true if sorted hand is two pair """
+
     # First, get the ranks of the cards in a list
     ranks = [card[0] for card in sorted_hand]
 
-    # Then, use Counter class to create object with counts of each unique element in list, and then sum the ones that
-    # have a count of 2
+    # Then, use Counter class to create object with counts of each unique element in list,
+    # and then sum the ones that have a count of 2
     num_counts = Counter(ranks)
 
     # If the sum is 2, there are two pairs and should return true
@@ -62,6 +68,8 @@ def is_two_pair(sorted_hand):
 
 
 def is_pair(sorted_hand):
+    """ Function that returns true if sorted hand is a pair """
+
     # First, get the ranks of the cards in a list
     ranks = [card[0] for card in sorted_hand]
     pair = False
@@ -74,30 +82,39 @@ def is_pair(sorted_hand):
 
 
 def is_flush(sorted_hand):
-    # Check if the cards form a flush by seeing if the suits all match
+    """ Function that returns true if sorted hand is a flush """
+
+    # Check if the cards form a flush by seeing if the suits (second in the card tuple) all match
     flush = all(card[-1] == sorted_hand[0][-1] for card in sorted_hand)
     return flush
 
 
 def is_straight(sorted_hand):
+    """ Function that returns true if sorted hand is a straight """
+
     ranks = [card[0] for card in sorted_hand]
-    # This is the only hand where an Ace being high or low is important, and only needs to be converted to a value of
-    # 1 if at least a 2 is present in the list to be considered a straight. Loop through the ranks that contain a 2
-    # and if a 14 (A) is present, change it to a value of 1. Then, resort the list
+    # This is the only hand where an Ace being high or low is important, and only needs to be
+    # converted to a value of 1 if at least a 2 is present in the list to be considered a
+    # straight. Loop through the ranks that contain a 2 and if a 14 (A) is present, change it to
+    # a value of 1. Then, resort the list
     if 2 in ranks:
-        for i in range(len(ranks)):
-            if ranks[i] == 14:
-                ranks[i] = 1
+        for index, value in enumerate(ranks):
+            if value == 14:
+                ranks[index] = 1
     ranks = sorted(ranks)
-    # Check if cards are in consecutive order by first getting the ranks in a sorted list, then using list
-    # comprehension to check if all elements in the list are consecutive, and if all the elements are consecutive,
-    # the list comprehension will return a list of True values; if not, the list will have at least one False value.
-    # Then use the all() function to check that all the boolean values in the list are True. If all elements are
-    # True, then it is a straight.
+
+    # Check if cards are in consecutive order by first getting the ranks in a sorted list,
+    # then using list comprehension to check if all elements in the list are consecutive,
+    # and if all the elements are consecutive, the list comprehension will return a list of True
+    # values; if not, the list will have at least one False value. Then use the all() function to
+    # check that all the boolean values in the list are True. If all elements are True,
+    # then it is a straight.
     return all(ranks[i] == ranks[i - 1] + 1 for i in range(1, len(ranks)))
 
 
 def is_royal_flush(sorted_hand):
+    """ Function that returns true if sorted hand is a royal flush """
+
     # Check if the cards form a flush
     flush = is_flush(sorted_hand)
 
@@ -110,6 +127,8 @@ def is_royal_flush(sorted_hand):
 
 
 def is_straight_flush(sorted_hand):
+    """ Function that returns true if sorted hand is a straight flush """
+
     # Check if the cards form a flush
     flush = is_flush(sorted_hand)
 
@@ -119,6 +138,8 @@ def is_straight_flush(sorted_hand):
 
 
 def is_four_kind(sorted_hand):
+    """ Function that returns true if sorted hand is four of a kind """
+
     # First, get the ranks of the cards in a list
     ranks = [card[0] for card in sorted_hand]
     four_kind = False
@@ -131,6 +152,8 @@ def is_four_kind(sorted_hand):
 
 
 def sort_cards(cards):
+    """ Function to sort cards from low to high, input is a list of cards, output is a list"""
+
     # I am converting each card in the player's set of cards into a numeric value by calling my
     # convert_card_to_numeric function, and then sorting those values from low to high
     numeric_hand = [convert_card_to_numeric(card) for card in cards]
@@ -139,50 +162,58 @@ def sort_cards(cards):
 
 
 def hand_ranking(cards):
+    """ Function that returns the hand as a string with input of a list of cards """
+
+    # First, sort cards
     sorted_cards = sort_cards(cards)
-    # I am calling on the boolean functions I wrote earlier that determine if the sorted cards are a hand or
-    # not. I am going in the order from the highest hand to the lowest so that the code exits out when the highest
-    # hand is found. This prevents something like a royal flush being called as a straight or a flush
+
+    # Next, call on boolean functions that determine if the sorted cards are a specific hand or not.
+    # Going in the order from the highest hand to the lowest so that the code exits out when the
+    # highest hand is found--prevents something like royal flush called as a straight or a flush
     if is_royal_flush(sorted_cards):
         return "Royal Flush"
 
-    elif is_straight_flush(sorted_cards):
+    if is_straight_flush(sorted_cards):
         return "Straight Flush"
 
-    elif is_four_kind(sorted_cards):
+    if is_four_kind(sorted_cards):
         return "Four of a Kind"
 
-    elif is_full_house(sorted_cards):
+    if is_full_house(sorted_cards):
         return "Full House"
 
-    elif is_flush(sorted_cards):
+    if is_flush(sorted_cards):
         return "Flush"
 
-    elif is_straight(sorted_cards):
+    if is_straight(sorted_cards):
         return "Straight"
 
-    elif is_three_kind(sorted_cards):
+    if is_three_kind(sorted_cards):
         return "Three of a Kind"
 
-    elif is_two_pair(sorted_cards):
+    if is_two_pair(sorted_cards):
         return "Two Pair"
 
-    elif is_pair(sorted_cards):
+    if is_pair(sorted_cards):
         return "Pair"
 
-    else:
-        return "High Card"
+    return "High Card"
 
 
 # Part 2: Deal Cards and Determine Winner
+
+
 def deal_cards(player_list):
+    """ Function that deals a list of players 5 cards each and stores output in dictionary"""
+
     # Creating a dictionary of players that will hold their names as keys and cards as a value
     players = {}
     deck = Deck()
     deck.build()
-    # For each player in the list given, will give random 5 cards, and then remove those cards from the overall deck
-    # so they are not repeated in another player's cards. Then saving the player name as the key and their cards as
-    # the associated value
+
+    # For each player in the list given, will give random 5 cards, and then remove those cards
+    # from the overall deck so they are not repeated in another player's cards. Then saving the
+    # player name as the key and their cards as the associated value
     for player in player_list:
         player_cards = random.sample(deck.cards, k=5)
         for card in player_cards:
@@ -193,69 +224,72 @@ def deal_cards(player_list):
     return players
 
 
-# I created a dictionary that has the hands as the keys and their "score" as the values. I've set these scores from
-# 1-10, with 10 being the best hand and 1 being the high card.
-score_hands = {"Royal Flush": 10, "Straight Flush": 9, "Four of a Kind": 8, "Full House": 7, "Flush": 6, "Straight": 5,
+# Create dictionary that has the hands as the keys and their "score" as the values. Set these scores
+# from 1-10, with 10 being the best hand and 1 being the high card.
+score_hands = {"Royal Flush": 10, "Straight Flush": 9, "Four of a Kind": 8, "Full House": 7,
+               "Flush": 6, "Straight": 5,
                "Three of a Kind": 4, "Two Pair": 3, "Pair": 2, "High Card": 1}
 
 
-# For the winner_is function, I am actually returning a list of strings instead of a string that includes multiple
-# players that have the same hand, and that is the winning hand
-def winner_is(round):
-    # I've created an empty dictionary called scores that will have hte players as the keys and their scores as the
-    # values
+def winner_is(players):
+    """Function that returns list of strings with input of dictionary of players and their hands"""
+
+    # Output is list of strings so winner can include multiple players that have the same hand
+
+    # Create an empty dictionary called scores that will have the players as the keys and their
+    # scores as the values
     scores = {}
 
-    # I am looping through the items in the round dictionary that has the players and their associated cards as the
-    # values and calling hand_ranking to determine that player's hand based on their cards
-    for player, hand in round.items():
+    # Loop through dictionary items and call hand_ranking to determine that player's hand
+    for player, hand in players.items():
         player_hand = hand_ranking(hand)
-        # Then, I get that player's scores by referencing the premade dictionary called score_hands  I am looking up
-        # the player score in the dictionary by calling their hand as the key.
+
+        # Get specific player's scores by referencing the pre-made dictionary called score_hands
+        # Look up the player score in the dictionary by using their hand as key
         player_score = score_hands[player_hand]
 
-        # Then, I am adding that player and their score into the scores dictionary
+        # Add that player and their score into the scores dictionary
         scores[player] = player_score
-    # I am finding the max scores in the dictionary and seeing which of the players have that max score by using list
-    # comprehension. I am then returning that list
+
+    # Find the max scores in the dictionary and see which of the players have that max score by
+    # using list comprehension.
     max_scores = max(scores.values())
-    winning_players = [player for player in scores if scores[player] == max_scores]
+    winning_players = [player for player, score in scores.items() if score == max_scores]
+
+    # Return list of winners
     return winning_players
-
-
-# TODO: If I had time, I would add an additional function/functions to determine who is the winner when multiple
-#  players have the same hand
-#  def tie_breaker(winning_players):
-#  pass
 
 
 # Part 3: OOP
 class Card:
+    """ Class representing a card """
+
     def __init__(self, suit, val):
+        """ Initialize the card with its suit and value"""
         self.suit = suit
         self.val = val
         self.card = val + suit
-        # I have created an additional variable here, a tuple that represents the numeric value of the card by
-        # converting its rank to an integer and separating out the suit
+        # Create tuple that represents the numeric value of the card by converting its rank to an
+        # integer and separating out the suit as string
         self.num_card = ()
 
-    # To show the card, I am returning the variable card that is the value and the suit that is inputted when a card
-    # is created
     def show(self):
+        """ Function that returns the variable card that holds the value and the suit inputted
+        when a card is created, i.e., shows a card"""
         return self.card
 
-    # I want to include my convert to numeric version of the card function here
-    def convertCard(self):
+    def convert_card(self):
+        """ Function that converts card to numeric version as a tuple """
         rank_str = self.val
         suit = self.suit
 
         # Making a dictionary with the face cards and their numeric values
         face_card_values = {'J': 11, 'Q': 12, 'K': 13, 'A': 14}
 
-        # If the rank is a face card, getting the associated numeric value of it and saving it to a new variable,
-        # rank_numeric
-        if rank_str in list(face_card_values.keys()):
-            rank_numeric = face_card_values.get(rank_str)
+        # If the rank is a face card, getting the associated numeric value of it and saving it to
+        # a new variable, rank_numeric
+        if rank_str in face_card_values:
+            rank_numeric = face_card_values[rank_str]
         # Otherwise, converting the string rank into a numeric value
         else:
             rank_numeric = int(rank_str)
@@ -266,19 +300,23 @@ class Card:
 
 
 class Deck:
+    """ Class representing a deck """
+
     def __init__(self):
-        # I've created an empty list of cards that represents the deck. I will populate this list when I call build()
+        """ Initialize deck """
+        # Create empty list of cards that represents the deck. Populate this list with build()
         self.cards = []
 
     def show(self):
-        # To show the cards, I am just calling a print function that prints the list cards that is a variable of this
-        # class
+        """ Function to show the cards by returning list of cards"""
         return self.cards
 
-    # I am building this deck of cards by looping 4 times (once for each of the four suits) and creating 13
-    # separate cards from 2-14 that correspond with the ranks. I've accounted for the face cards by making them
-    # 11-14. I've done this by looping again in a range of 2-15
     def build(self):
+        """ Function that builds deck of 52 cards"""
+
+        # Build this deck of cards by looping 4 times (once for each of the four suits) and
+        # create 13 separate cards from 2-14 that correspond with the ranks. Account for the
+        # face cards by making them 11-14.
         for suit in range(4):
             for num in range(2, 15):
                 if num == 11:
@@ -303,43 +341,55 @@ class Deck:
                     card = str(num) + "s"
                     self.cards.append(card)
 
-    # I am shuffling the cards in the deck by using the random.shuffle function, and looping through a range of num
-    # to reflect the number of times the user wants to shuffle
     def shuffle(self, num=1):
-        for i in range(num):
+        """ Function that shuffles the list of cards in deck num amount of times """
+
+        # Shuffle the cards in the deck by using the random.shuffle function, and looping
+        # through a range of num to reflect the number of times the user wants to shuffle
+        for _ in range(num):
             random.shuffle(self.cards)
         return self.cards
 
-    # To deal one card, I am using pop to return the last card in the list of cards (this should be done after the
-    # deck of cards is shuffled) and remove that card from the deck by removing it from the list
     def deal(self):
+        """ Function that deals one card from deck """
+
+        # Use pop to return the last card in the list of cards (should be done after the deck of
+        # cards is shuffled) and remove that card from the deck by removing it from the list
         return self.cards.pop()
 
 
 class Player:
+    """ Class representing a player"""
+
     def __init__(self, name):
-        # The two variables here are name, which should be inputted when the user creates a player and an empty list
-        # that will hold the player's cards
+        """ Initialize player object with name"""
         self.name = name
+        # Create empty list that will hold the player's cards
         self.player_cards = []
 
-    # I am using an f string to say hello and the player's name when the function is called
-    def sayHello(self):
+    def say_hello(self):
+        """ Function that returns a hello statement with player name """
+
+        # Use an f string to say hello and the player's name when the function is called
         return f"Hi, I'm {self.name}!"
 
-    # The two parameters for this function are the deck of cards and the number of cards to draw. If the number of
-    # cards in the deck are greater or equal to the number of cards to draw, then it is possible to draw the cards. I
-    # used random.sample to select num of cards in the deck, and then I am looping through the player's cards and
-    # removing each one from the deck so there are no repeats. If the number of cards to draw is greater than the
-    # number of cards remaining in the deck, the function will return False
     def draw(self, deck, num=1):
+        """ Function that populates a player's cards with a num amount of cards from the deck """
+
+        # If number of cards in the deck are greater or equal to the number of cards to draw,
+        # then it is possible to draw the cards and return True.
         if len(deck.cards) >= num:
+            # Use random.sample to select random num of cards in the deck
             self.player_cards = random.sample(deck.cards, k=num)
+            # Loop through the player's cards and remove each one from the deck so there are no
+            # repeats.
             for card in self.player_cards:
                 deck.cards.remove(card)
-        else:
-            return False
+            return True
+        # If the number of cards to draw is greater than the number of cards remaining in the deck,
+        # the function will return False
+        return False
 
-    # To show the player's hand, I am returning the list of the player cards
-    def showHand(self):
+    def show_hand(self):
+        """ Function that returns the list of the player cards and show their hand"""
         return self.player_cards

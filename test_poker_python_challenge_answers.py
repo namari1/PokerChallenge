@@ -1,22 +1,23 @@
 import pytest
-from poker_python_challenge_answers import Deck, Player, Card, hand_ranking, deal_cards, winner_is, convert_card_to_numeric, is_flush, \
-    is_four_kind, is_three_kind, is_straight_flush, is_straight, is_royal_flush, is_full_house, is_two_pair, is_pair, \
-    sort_cards
+from poker_python_challenge_answers import Deck, Player, Card, hand_ranking, deal_cards, \
+    winner_is, convert_card_to_numeric, is_flush, is_four_kind, is_three_kind, is_straight_flush, \
+    is_straight, is_royal_flush, is_full_house, is_two_pair, is_pair, sort_cards
 
 
-# Test Functions (boolean hand checks, hand ranking, dealing cards, sorting cards, converting cards to numeric values,
-# and determining the winner)
+# Test Functions (boolean hand checks, hand ranking, dealing cards, sorting cards, converting
+# cards to numeric values, and determining the winner)
 
-@pytest.mark.parametrize("sample_hands, expected_result", [(["2h", "As", "5c", "3d", "4h"], "Straight"),
-                                                           (["2h", "Ah", "5h", "3h", "4h"], "Straight Flush"),
-                                                           (["6h", "8h", "Qh", "3h", "10h"], "Flush"),
-                                                           (["10s", "As", "Qs", "Js", "Ks"], "Royal Flush"),
-                                                           (["10h", "10s", "10c", "10d", "4h"], "Four of a Kind"),
-                                                           (["2h", "2s", "2c", "8d", "8h"], "Full House"),
-                                                           (["5h", "5s", "5c", "3d", "4h"], "Three of a Kind"),
-                                                           (["6h", "6s", "4c", "3d", "4h"], "Two Pair"),
-                                                           (["Ah", "As", "5c", "3d", "4h"], "Pair"),
-                                                           (["Kh", "As", "5c", "3d", "4h"], "High Card"), ])
+@pytest.mark.parametrize("sample_hands, expected_result",
+                         [(["2h", "As", "5c", "3d", "4h"], "Straight"),
+                          (["2h", "Ah", "5h", "3h", "4h"], "Straight Flush"),
+                          (["6h", "8h", "Qh", "3h", "10h"], "Flush"),
+                          (["10s", "As", "Qs", "Js", "Ks"], "Royal Flush"),
+                          (["10h", "10s", "10c", "10d", "4h"], "Four of a Kind"),
+                          (["2h", "2s", "2c", "8d", "8h"], "Full House"),
+                          (["5h", "5s", "5c", "3d", "4h"], "Three of a Kind"),
+                          (["6h", "6s", "4c", "3d", "4h"], "Two Pair"),
+                          (["Ah", "As", "5c", "3d", "4h"], "Pair"),
+                          (["Kh", "As", "5c", "3d", "4h"], "High Card"), ])
 def test_hand_ranking(sample_hands, expected_result):
     result = hand_ranking(sample_hands)
     assert result == expected_result
@@ -137,8 +138,8 @@ def test_convert_card():
     card1 = Card("s", "A")
     card2 = Card("c", "4")
 
-    result1 = card1.convertCard()
-    result2 = card2.convertCard()
+    result1 = card1.convert_card()
+    result2 = card2.convert_card()
 
     assert card1.num_card == (14, "s")
     assert result1 == (14, "s")
@@ -162,9 +163,12 @@ def test_deck_build():
     deck = Deck()
     deck.build()
     assert len(deck.cards)
-    assert deck.cards == ['2h', '3h', '4h', '5h', '6h', '7h', '8h', '9h', '10h', 'Jh', 'Qh', 'Kh', 'Ah', '2d', '3d',
-                          '4d', '5d', '6d', '7d', '8d', '9d', '10d', 'Jd', 'Qd', 'Kd', 'Ad', '2c', '3c', '4c', '5c',
-                          '6c', '7c', '8c', '9c', '10c', 'Jc', 'Qc', 'Kc', 'Ac', '2s', '3s', '4s', '5s', '6s', '7s',
+    assert deck.cards == ['2h', '3h', '4h', '5h', '6h', '7h', '8h', '9h', '10h', 'Jh', 'Qh', 'Kh',
+                          'Ah', '2d', '3d',
+                          '4d', '5d', '6d', '7d', '8d', '9d', '10d', 'Jd', 'Qd', 'Kd', 'Ad', '2c',
+                          '3c', '4c', '5c',
+                          '6c', '7c', '8c', '9c', '10c', 'Jc', 'Qc', 'Kc', 'Ac', '2s', '3s', '4s',
+                          '5s', '6s', '7s',
                           '8s', '9s', '10s', 'Js', 'Qs', 'Ks', 'As']
 
 
@@ -195,9 +199,9 @@ def test_create_player():
     assert player.player_cards == []
 
 
-def test_player_sayHello():
+def test_player_say_hello():
     player = Player("Noor")
-    assert player.sayHello() == "Hi, I'm Noor!"
+    assert player.say_hello() == "Hi, I'm Noor!"
 
 
 def test_player_draw_with_enough_cards():
@@ -207,7 +211,7 @@ def test_player_draw_with_enough_cards():
 
     original_cards = deck.cards.copy()
     result = player.draw(deck, num=5)
-    assert result is None
+    assert result is True
     assert len(player.player_cards) == 5
     assert len(deck.cards) == len(original_cards) - 5
 
@@ -222,10 +226,10 @@ def test_player_draw_with_not_enough_cards():
     assert len(deck.cards) == 52
 
 
-def test_player_showHand():
+def test_player_show_hand():
     player = Player("Noor")
     deck = Deck()
     deck.build()
     player.draw(deck, num=5)
-    result = player.showHand()
+    result = player.show_hand()
     assert result == player.player_cards
